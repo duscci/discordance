@@ -3,7 +3,7 @@
 Plugin Name: Discordance
 Plugin URI: https://github.com/duscci/discordance
 Description: An WordPress plugin to send your posts to Discord using Webhooks.
-Version: 0.1.1
+Version: 0.1.2
 Author: Valdir Ronis
 Author URI: https://github.com/duscci
 Donate link: https://ko-fi.com/duscci
@@ -66,7 +66,7 @@ function discordance_menu()
 }
 function discordance_js()
 {
-    wp_enqueue_script('discordance', WP_PLUGIN_URL . '/discordance/js/main.js', array(), '0.1.1', true);
+    wp_enqueue_script('discordance', plugins_url('/js/main.js', __FILE__), array(), '0.1.2', true);
 }
 function discordance($postID)
 {

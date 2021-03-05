@@ -1,5 +1,5 @@
 <div class="wrap" id="discordance">
-	<h1 class="wp-heading-inline"><?= get_admin_page_title() ?></h1>
+	<h1 class="wp-heading-inline"><?php echo get_admin_page_title() ?></h1>
 	<?php
     if (isset($_POST['webhooks']) && isset($_POST['format'])) {
         $discordance_opts['webhooks'] = sanitize_textarea_field($_POST['webhooks']);
@@ -21,7 +21,7 @@ HTML;
 					<label for="webhooks">Discord Webhooks</label>
 				</th>
 				<td>
-					<textarea name="webhooks" id="webhooks" rows="4" cols="100" placeholder="https://discord.com/api/webhooks/id/token"><?= $discordance_opts['webhooks']; ?></textarea>
+					<textarea name="webhooks" id="webhooks" rows="4" cols="100" placeholder="https://discord.com/api/webhooks/id/token"><?php echo $discordance_opts['webhooks']; ?></textarea>
 					<p class="description">one Discord Webhook URL per line</p>
 				</td>
 			</tr>
@@ -30,7 +30,7 @@ HTML;
 					<button id="pretty" class="button button-primary">Pretty JSON</button>
 				</th>
 				<td style="position: relative;">
-					<textarea name="format" id="format" rows="12" cols="100"><?= stripslashes($discordance_opts['format']); ?></textarea>
+					<textarea name="format" id="format" rows="12" cols="100"><?php echo stripslashes($discordance_opts['format']); ?></textarea>
 					<div id="format-warn" style="color: red; font-size: 0.6rem; position: absolute; top: 0"></div>
 					<p class="description">
 						<strong>Variables:</strong> %title% (post title), %excerpt% (post excerpt), %thumbnail% (post thumbnail), %link% (post permalink), %author% (author display name), %author_url% (author url), %gravatar% (author avatar provided by <a href="https://en.gravatar.com/connect/" target="_blank">Gravatar</a>)<br />
