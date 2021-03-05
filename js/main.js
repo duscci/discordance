@@ -1,12 +1,15 @@
-﻿(function () {
-    const whs = document.querySelector("#webhooks")
-    const format = document.querySelector("#format")
+(function () {
+    const form = document.querySelector("form")
+    const webhooks = document.querySelector("#webhooks")
     const format_warn = document.querySelector("#format-warn")
+    const format = document.querySelector("#format")
+    const pretty = document.querySelector("#pretty")
     const submit = document.querySelector("#submit")
-    if (whs) {
-        whs.addEventListener("keyup", function (e) {
+    if (webhooks) {
+        webhooks.addEventListener("keyup", function (e) {
             e.preventDefault()
-            whs.value = whs.value.replace(/\s|\,/g, "\n")
+            webhooks.value = webhooks.value
+                .replace(/\s|\,/g, "\n")
         })
     }
     if (format) {
@@ -24,6 +27,28 @@
                     submit.setAttribute("disabled", true)
                 }
             }
+        })
+    }
+    if (pretty) {
+        pretty.addEventListener("click", function (e) {
+            e.preventDefault()
+            try {
+                format.value = JSON.stringify(JSON.parse(format.value), null, 4)
+            } catch (err) {
+                return
+            }
+        })
+    }
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            const valid_webhooks = new Set()
+            webhooks.value
+                .split("\n")
+                .filter(v => /^(https\:\/\/(www\.)?discord\.com\/api\/webhooks\/([0-9]+)\/([a-zA-Z0-9_-]+))/.test(v))
+                .map(v => valid_webhooks.add(v))
+            webhooks.value = Array.from(valid_webhooks).join("\n")
+            pretty.click()
+            return true
         })
     }
 })()

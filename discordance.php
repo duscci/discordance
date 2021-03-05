@@ -2,8 +2,8 @@
 /*
 Plugin Name: Discordance
 Plugin URI: https://github.com/duscci/discordance
-Description: Send your posts to Discord using Webhooks
-Version: 0.1.0
+Description: An WordPress plugin to send your posts to Discord using Webhooks.
+Version: 0.1.1
 Author: Valdir Ronis
 Author URI: https://github.com/duscci
 Donate link: https://ko-fi.com/duscci
@@ -20,17 +20,24 @@ function discordance_init()
             'webhooks' => '',
             'format' => '
 {
-    "content":"📢 **New post on the blog!**",
-    "embeds": [{
-        "title": "%title%",
-        "description": "%excerpt%",
-        "url": "%link%",
-        "thumbnail": {
-            "url": "%thumbnail%"
+    "content": "📢 **New post on the blog!**",
+    "embeds": [
+        {
+            "author": {
+                "name": "%author%",
+                "url": "%author_url%",
+                "icon_url": "%gravatar%"
+            },
+            "title": "%title%",
+            "description": "%excerpt%",
+            "url": "%link%",
+            "thumbnail": {
+                "url": "%thumbnail%"
+            }
         }
-    }]
+    ]
 }
-    '
+'
         );
         function discordance_warning()
         {
@@ -59,7 +66,7 @@ function discordance_menu()
 }
 function discordance_js()
 {
-    wp_enqueue_script('discordance', WP_PLUGIN_URL . '/discordance/js/main.js', array(), '0.1.0', true);
+    wp_enqueue_script('discordance', WP_PLUGIN_URL . '/discordance/js/main.js', array(), '0.1.1', true);
 }
 function discordance($postID)
 {
@@ -67,13 +74,25 @@ function discordance($postID)
     $status = get_post_status($postID);
     if (get_post_meta($postID, '_discordance', true) !== 'publish' && $status === 'publish') {
         $post = get_post($postID);
-        $gettitle = sanitize_text_field($post->post_title);
-        $getexcerpt = sanitize_text_field(html_entity_decode(get_the_excerpt($postID)));
-        $title = trim(substr($gettitle, 0, 248)) . (strlen($gettitle) > 248 ? '[...]' : '');
-        $excerpt = trim(substr($getexcerpt, 0, 512)) . (strlen($getexcerpt) > 512 ? '[...]' : '');
-        $search = array('%title%', '%excerpt%', '%thumbnail%', '%link%');
-        $replace = array($title, $excerpt, get_the_post_thumbnail_url($postID), get_permalink($postID));
-        $embed = str_replace($search, $replace, $discordance_opts['format']);
+        $title = sanitize_text_field($post->post_title);
+        $excerpt = sanitize_text_field(
+            html_entity_decode(
+                (has_excerpt($postID) ? $post->post_excerpt : $post->post_content)
+            )
+        );
+        $variables = array(
+            '%author%' => get_the_author_meta('display_name', $post->post_author),
+            '%author_url%' => get_the_author_meta('user_url', $post->post_author),
+            '%gravatar%' => get_avatar_url($post->post_author, 96, 'retro'),
+            '%title%' => trim(substr($title, 0, 248)) . (strlen($title) > 248 ? '[...]' : ''),
+            '%excerpt%' => trim(substr($excerpt, 0, 512)) . (strlen($excerpt) > 512 ? '[...]' : ''),
+            '%thumbnail%' => get_the_post_thumbnail_url($postID),
+            '%link%' => get_permalink($postID)
+        );
+        $embed = $discordance_opts['format'];
+        foreach ($variables as $search => $replace) {
+            $embed = str_replace($search, $replace, $embed);
+        }
         $hooks = preg_split('/\r\n|\r|\n/', $discordance_opts['webhooks']);
         foreach ($hooks as $hook) {
             $url = trim($hook);

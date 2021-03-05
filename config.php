@@ -22,18 +22,19 @@ HTML;
 				</th>
 				<td>
 					<textarea name="webhooks" id="webhooks" rows="4" cols="100" placeholder="https://discord.com/api/webhooks/id/token"><?= $discordance_opts['webhooks']; ?></textarea>
-					<p class="description">Discord Webhook URL per line</p>
+					<p class="description">one Discord Webhook URL per line</p>
 				</td>
 			</tr>
 				<th>
-					<label for="format">Embed format</label>
+					<label for="format">Embed format</label><br />
+					<button id="pretty" class="button button-primary">Pretty JSON</button>
 				</th>
 				<td style="position: relative;">
 					<textarea name="format" id="format" rows="12" cols="100"><?= stripslashes($discordance_opts['format']); ?></textarea>
 					<div id="format-warn" style="color: red; font-size: 0.6rem; position: absolute; top: 0"></div>
 					<p class="description">
-						<strong>Variables:</strong> %title% (post title), %excerpt% (post excerpt), %thumbnail% (post thumbnail), %link% (post url)<br />
-						<strong>Embed Visualizer:</strong> <a href="https://leovoel.github.io/embed-visualizer/" target="_blank">https://leovoel.github.io/embed-visualizer/</a>
+						<strong>Variables:</strong> %title% (post title), %excerpt% (post excerpt), %thumbnail% (post thumbnail), %link% (post permalink), %author% (author display name), %author_url% (author url), %gravatar% (author avatar provided by <a href="https://en.gravatar.com/connect/" target="_blank">Gravatar</a>)<br />
+						<strong>Embed Visualizer:</strong> <a href="https://leovoel.github.io/embed-visualizer/" target="_blank">https://leovoel.github.io/embed-visualizer/</a> (don't forget to activate webhook mode)
 					</p>
 				</td>
 			</tr>
